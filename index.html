@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .iphone-ratio::before {
+      content: "";
+      display: block;
+      padding-top: calc(812 / 375 * 100%);
+    }
+    .frame-container {
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease;
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-500 to-purple-500">
+
+  <!-- Khung iPhone nghiêng -->
+  <div id="frame" class="frame-container relative w-[90vw] max-w-[375px] iphone-ratio rounded-[2.5rem] border-8 border-black bg-white shadow-xl overflow-hidden">
+
+    <!-- Nội dung bên trong -->
+    <div class="absolute inset-0 overflow-y-auto px-4 pt-10 pb-6 z-10 text-black">
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[55%] h-6 bg-black rounded-b-xl z-20"></div>
+
+      <div class="flex flex-col items-center text-center space-y-4">
+        <img src="https://i.pravatar.cc/150?img=3" alt="avatar" class="w-24 h-24 rounded-full border-4 border-indigo-600 shadow-md">
+        <h1 class="text-xl font-bold">Nguyễn Văn Thao</h1>
+        <p class="text-sm text-gray-600">Frontend Developer | Yêu UI/UX</p>
+
+        <!-- Kỹ năng -->
+        <div class="w-full">
+          <h2 class="text-left font-semibold mt-4 mb-2">💻 Kỹ năng</h2>
+          <ul class="text-left list-disc list-inside text-sm space-y-1">
+            <li>HTML, CSS, JavaScript</li>
+            <li>Tailwind CSS, ReactJS</li>
+            <li>Git</li>
+          </ul>
+        </div>
+
+        <!-- Học vấn -->
+        <div class="w-full">
+          <h2 class="text-left font-semibold mt-4 mb-2">🎓 Học vấn</h2>
+          <div class="text-sm text-left bg-gray-100 p-3 rounded-xl">
+            <p class="font-semibold">Đại học Công nghệ HUTECH</p>
+            <p>Cử nhân Công nghệ Thông tin (2020 - 2024)</p>
+          </div>
+        </div>
+
+        <!-- Liên hệ -->
+        <div class="mt-6">
+          <a href="mailto:zikdev2112@gmail.com" class="inline-block bg-indigo-600 text-white px-4 py-2 rounded-xl shadow">
+            📩 Liên hệ qua email
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script cảm biến -->
+  <script>
+    const frame = document.getElementById("frame");
+
+    // Lắng nghe cảm biến nghiêng
+    window.addEventListener("deviceorientation", (event) => {
+      const beta = event.beta || 0; // lên / xuống
+      const gamma = event.gamma || 0; // trái / phải
+
+      // Giới hạn góc để tránh quá nghiêng
+      const rotateX = Math.max(Math.min(beta - 45, 30), -30); // nghiêng dọc
+      const rotateY = Math.max(Math.min(gamma, 30), -30);     // nghiêng ngang
+
+      frame.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    }, true);
+  </script>
+
+</body>
+</html>
