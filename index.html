@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Profile</title>
+  <title>Portfolio on iPhone</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .iphone-ratio::before {
@@ -14,15 +14,16 @@
     .frame-container {
       transform-style: preserve-3d;
       transition: transform 0.1s ease;
+      will-change: transform;
     }
   </style>
 </head>
-<body class="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-500 to-purple-500">
+<body class="bg-gradient-to-br from-indigo-600 to-purple-700 min-h-screen flex items-center justify-center">
 
-  <!-- Khung iPhone nghiêng -->
-  <div id="frame" class="frame-container relative w-[90vw] max-w-[375px] iphone-ratio rounded-[2.5rem] border-8 border-black bg-white shadow-xl overflow-hidden">
+  <!-- Khung iPhone -->
+  <div id="frame" class="frame-container relative w-[90vw] max-w-[375px] iphone-ratio rounded-[2.5rem] border-[10px] border-black bg-white shadow-2xl overflow-hidden">
 
-    <!-- Nội dung bên trong -->
+    <!-- Nội dung bên trong iPhone -->
     <div class="absolute inset-0 overflow-y-auto px-4 pt-10 pb-6 z-10 text-black">
       <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[55%] h-6 bg-black rounded-b-xl z-20"></div>
 
@@ -60,21 +61,39 @@
     </div>
   </div>
 
-  <!-- Script cảm biến -->
+  <!-- Script cảm biến + chuột -->
   <script>
     const frame = document.getElementById("frame");
 
-    // Lắng nghe cảm biến nghiêng
-    window.addEventListener("deviceorientation", (event) => {
-      const beta = event.beta || 0; // lên / xuống
-      const gamma = event.gamma || 0; // trái / phải
-
-      // Giới hạn góc để tránh quá nghiêng
-      const rotateX = Math.max(Math.min(beta - 45, 30), -30); // nghiêng dọc
-      const rotateY = Math.max(Math.min(gamma, 30), -30);     // nghiêng ngang
-
+    function handleOrientation(beta, gamma) {
+      const rotateX = Math.max(Math.min(beta - 45, 30), -30);
+      const rotateY = Math.max(Math.min(gamma, 30), -30);
       frame.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-    }, true);
+    }
+
+    // 1. Trên điện thoại: dùng gyroscope
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener("deviceorientation", (e) => {
+        if (e.beta !== null && e.gamma !== null) {
+          handleOrientation(e.beta, e.gamma);
+        }
+      }, true);
+    }
+
+    // 2. Trên desktop: dùng mousemove để giả lập nghiêng
+    else {
+      document.addEventListener("mousemove", (e) => {
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+
+        const offsetX = (e.clientX - centerX) / centerX;
+        const offsetY = (e.clientY - centerY) / centerY;
+
+        const rotateX = offsetY * -20;
+        const rotateY = offsetX * 20;
+        frame.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      });
+    }
   </script>
 
 </body>
